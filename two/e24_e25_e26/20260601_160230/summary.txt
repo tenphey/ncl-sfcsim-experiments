@@ -1,0 +1,25 @@
+E24/E25/E26 latest-run aggregation
+generated_at: 20260601_160230
+
+Data Sources (which experiment folder/run folder was used)
+[b4] exp=e24, condition=CCR_data > IDR_image
+  run_folder: run_20260601_135211_150_100
+  run_path: experiments/e24/run_20260601_135211_150_100
+  logs_path: experiments/e24/run_20260601_135211_150_100/logs
+  summary_csv: experiments/e24/run_20260601_135211_150_100/grid_e24_summary.csv
+[b5] exp=e25, condition=CCR_data ~= IDR_image
+  run_folder: run_20260601_140033_150_100
+  run_path: experiments/e25/run_20260601_140033_150_100
+  logs_path: experiments/e25/run_20260601_140033_150_100/logs
+  summary_csv: experiments/e25/run_20260601_140033_150_100/grid_e25_summary.csv
+[b6] exp=e26, condition=CCR_data < IDR_image
+  run_folder: run_20260601_140711_150_100
+  run_path: experiments/e26/run_20260601_140711_150_100
+  logs_path: experiments/e26/run_20260601_140711_150_100/logs
+  summary_csv: experiments/e26/run_20260601_140711_150_100/grid_e26_summary.csv
+
+Aggregated Metrics
+scenario             condition  qualified_runs    wins_display  gain_N_over_D_median  gain_N_over_D_mean  DHEFT_mean  NHEFT_mean                          latest_run_dir_rel
+      b4  CCR_data > IDR_image              40  38/40 (95.00%)              9.274924           10.788574   50.434325   44.975470 experiments/e24/run_20260601_135211_150_100
+      b5 CCR_data ~= IDR_image              13 13/13 (100.00%)             12.021573           12.574221   55.149131   48.111301 experiments/e25/run_20260601_140033_150_100
+      b6  CCR_data < IDR_image              33 33/33 (100.00%)             15.287874           15.758199   56.506964   47.447746 experiments/e26/run_20260601_140711_150_100

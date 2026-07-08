@@ -1,0 +1,17 @@
+{
+  "experiment": "E21 - Repository Bandwidth Impact on B1 Scenario",
+  "timestamp": "20260601_021905",
+  "master_seed": 150,
+  "num_seeds": 1,
+  "seeds_used": [
+    6347
+  ],
+  "repo_bws": [
+    100,
+    300,
+    600,
+    900
+  ],
+  "total_runs": 1,
+  "dry_run": false
+}

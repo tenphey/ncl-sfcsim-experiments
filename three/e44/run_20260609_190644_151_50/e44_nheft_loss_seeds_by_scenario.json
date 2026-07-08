@@ -1,0 +1,12 @@
+{
+  "b44": {
+    "9283": {
+      "HEFT": 257.0253,
+      "DHEFT": 49.8117,
+      "NHEFT": 50.223555,
+      "gain_N_over_D_percent": -0.826823,
+      "nheft_minus_dheft": 0.411855,
+      "time_sec": 11.289684
+    }
+  }
+}

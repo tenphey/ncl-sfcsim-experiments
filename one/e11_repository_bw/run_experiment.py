@@ -1,0 +1,234 @@
+#!/usr/bin/env python3
+"""
+E11 Experiment: Repository Bandwidth Impact (H1 Verification)
+
+Scans repository_bw ∈ {60, 120, 240, 480} MBps while fixing other parameters.
+Generates grid_e11_results.csv and runs analysis.
+
+Usage:
+  python3 run_experiment.py                    # Normal run
+  E11_DRY_RUN=1 python3 run_experiment.py      # Dry run (print commands only)
+  E11_NUM_SEEDS=10 python3 run_experiment.py   # Use 10 seeds instead of default
+"""
+
+import os
+import sys
+import subprocess
+import tempfile
+import csv
+import json
+import time
+import random
+from datetime import datetime
+
+# Configuration
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+EXPERIMENTS_DIR = os.path.join(REPO_ROOT, 'experiments')
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_PROPS = os.path.join(EXPERIMENTS_DIR, 'base.properties')
+
+# Java command
+JAVA_CMD_BASE = [
+    'java',
+    '-Xmx1000m',
+    '-cp', f'{REPO_ROOT}/classes:{REPO_ROOT}/lib/*',
+    'net.gripps.cloud.nfv.main.NFVSchedulingTest'
+]
+
+# Grid scan parameters
+# REPO_BWS = [60, 120, 240, 480]
+REPO_BWS = [100, 300, 600, 900]
+DRY_RUN = int(os.getenv('E11_DRY_RUN', '0')) == 1
+LIMIT_RUNS = int(os.getenv('E11_LIMIT_RUNS', '0'))
+
+# Seeding
+MASTER_SEED = int(os.getenv('E11_MASTER_SEED', '150'))
+NUM_SEEDS_DEFAULT = 100
+NUM_SEEDS = int(os.getenv('E11_NUM_SEEDS', str(NUM_SEEDS_DEFAULT)))
+
+random.seed(MASTER_SEED)
+SEEDS = random.sample(range(1000, 9999), NUM_SEEDS)
+
+TIMEOUT = 120  # seconds per run
+
+def read_props(path):
+    """Read properties file into dict."""
+    props = {}
+    if os.path.exists(path):
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                if '=' in line:
+                    k, v = line.split('=', 1)
+                    props[k.strip()] = v.strip()
+    return props
+
+def write_props(props, path):
+    """Write properties dict to file."""
+    with open(path, 'w') as f:
+        for k, v in props.items():
+            f.write(f'{k}={v}\n')
+
+def extract_makespans(output):
+    """Extract HEFT, DHEFT, NHEFT makespans from Java output."""
+    heft = dheft = nheft = None
+    for line in output.split('\n'):
+        if '[HEFT]makespan' in line and ':' in line:
+            try:
+                heft = float(line.split(':')[-1].strip())
+            except:
+                pass
+        elif '[DHEFT]makespan' in line and ':' in line:
+            try:
+                dheft = float(line.split(':')[-1].strip())
+            except:
+                pass
+        elif '[NHEFT]makespan' in line and ':' in line:
+            try:
+                nheft = float(line.split(':')[-1].strip())
+            except:
+                pass
+    return heft, dheft, nheft
+
+def main():
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    out_dir = os.path.join(THIS_DIR, f'run_{timestamp}_{MASTER_SEED}_{NUM_SEEDS_DEFAULT}')
+    os.makedirs(out_dir, exist_ok=True)
+    logs_dir = os.path.join(out_dir, 'logs')
+    os.makedirs(logs_dir, exist_ok=True)
+
+    csv_path = os.path.join(out_dir, 'grid_e11_results.csv')
+    results = []
+
+    base = read_props(BASE_PROPS)
+
+    # Override fixed parameters
+    # base.update({
+    #     'vnf_type_max': '5',
+    #     'sfc_vnf_num': '200',
+    #     'multiple_sfc_num': '1',
+    #     'multiple_sfc_vnf_num_min': '200',
+    #     'multiple_sfc_vnf_num_max': '200',
+    #     'vnf_image_size_min': '2400',
+    #     'vnf_image_size_max': '6200',
+    #     'cloud_constrained_mode': '1',
+    #     'cloud_container_dl_mode': '1',
+    # })
+
+    total_runs = len(REPO_BWS) * len(SEEDS)
+    run_count = 0
+
+    print(f'=== E11 Experiment: Repository Bandwidth Impact ===')
+    print(f'Master seed: {MASTER_SEED}')
+    print(f'Number of seeds: {NUM_SEEDS}')
+    print(f'Repo BWs: {REPO_BWS}')
+    print(f'Total runs: {total_runs}')
+    if DRY_RUN:
+        print('[DRY RUN MODE - will not execute Java]')
+    print()
+
+    for rb in REPO_BWS:
+        for s in SEEDS:
+            run_count += 1
+            if LIMIT_RUNS > 0 and run_count > LIMIT_RUNS:
+                print(f'[{run_count}/{total_runs}] Limit reached, stopping.')
+                break
+
+            props = base.copy()
+            props['repository_bw'] = str(rb)
+            props['random_seed'] = str(s)
+
+            # Write temp properties
+            tmp = tempfile.NamedTemporaryFile(delete=False, suffix='.properties', mode='w')
+            write_props(props, tmp.name)
+            tmp.close()
+
+            cmd = JAVA_CMD_BASE + [tmp.name]
+
+            print(f'[{run_count}/{total_runs}] repo_bw={rb} seed={s}', end='')
+
+            if DRY_RUN:
+                print(' [DRY RUN CMD]')
+                print(f'  {" ".join(cmd)}')
+                heft = dheft = nheft = time_sec = 0
+            else:
+                try:
+                    start = time.time()
+                    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                          universal_newlines=True, timeout=TIMEOUT)
+                    elapsed = time.time() - start
+                    output = result.stdout
+
+                    # Save raw stdout for debugging (one file per run)
+                    log_name = os.path.join(logs_dir, f'run_seed_{s}_rb_{rb}.log')
+                    try:
+                        with open(log_name, 'w') as lf:
+                            lf.write(output)
+                    except Exception:
+                        pass
+
+                    heft, dheft, nheft = extract_makespans(output)
+                    if heft is not None and dheft is not None and nheft is not None:
+                        print(f' OK ({elapsed:.1f}s)')
+                        time_sec = elapsed
+                    else:
+                        print(f' PARSE ERROR (see {log_name})')
+                        heft = dheft = nheft = time_sec = 0
+                except subprocess.TimeoutExpired:
+                    print(f' TIMEOUT')
+                    heft = dheft = nheft = time_sec = 0
+                except Exception as e:
+                    print(f' ERROR: {e}')
+                    heft = dheft = nheft = time_sec = 0
+
+            results.append({
+                'repo_bw': rb,
+                'seed': s,
+                'HEFT': heft if heft else 0,
+                'DHEFT': dheft if dheft else 0,
+                'NHEFT': nheft if nheft else 0,
+                'time_sec': time_sec
+            })
+
+            # Cleanup temp file
+            try:
+                os.remove(tmp.name)
+            except:
+                pass
+
+        if LIMIT_RUNS > 0 and run_count > LIMIT_RUNS:
+            break
+
+    # Write results CSV
+    with open(csv_path, 'w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=['repo_bw', 'seed', 'HEFT', 'DHEFT', 'NHEFT', 'time_sec'])
+        writer.writeheader()
+        writer.writerows(results)
+
+    print(f'\nResults written to: {csv_path}')
+    print(f'RESULT_DIR={out_dir}')
+
+    # Write manifest
+    manifest = {
+        'experiment': 'E11 - Repository Bandwidth Impact (H1)',
+        'timestamp': timestamp,
+        'master_seed': MASTER_SEED,
+        'num_seeds': NUM_SEEDS,
+        'seeds_used': SEEDS,
+        'repo_bws': REPO_BWS,
+        'total_runs': len(results),
+        'dry_run': DRY_RUN,
+    }
+    with open(os.path.join(out_dir, 'run_manifest.json'), 'w') as f:
+        json.dump(manifest, f, indent=2)
+
+    # Copy base properties
+    with open(BASE_PROPS) as src:
+        content = src.read()
+    with open(os.path.join(out_dir, 'base_properties_snapshot.properties'), 'w') as dst:
+        dst.write(content)
+
+if __name__ == '__main__':
+    main()

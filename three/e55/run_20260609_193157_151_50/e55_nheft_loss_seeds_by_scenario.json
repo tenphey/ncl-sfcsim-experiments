@@ -1,0 +1,20 @@
+{
+  "b55": {
+    "8672": {
+      "HEFT": 290.7796,
+      "DHEFT": 55.6748,
+      "NHEFT": 55.993887,
+      "gain_N_over_D_percent": -0.573127,
+      "nheft_minus_dheft": 0.319087,
+      "time_sec": 7.791715
+    },
+    "9518": {
+      "HEFT": 351.817,
+      "DHEFT": 78.4975,
+      "NHEFT": 82.271676,
+      "gain_N_over_D_percent": -4.80802,
+      "nheft_minus_dheft": 3.774176,
+      "time_sec": 10.986826
+    }
+  }
+}

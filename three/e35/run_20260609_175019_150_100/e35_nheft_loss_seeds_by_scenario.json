@@ -1,0 +1,12 @@
+{
+  "b35": {
+    "2740": {
+      "HEFT": 328.7521,
+      "DHEFT": 68.2328,
+      "NHEFT": 69.027577,
+      "gain_N_over_D_percent": -1.164802,
+      "nheft_minus_dheft": 0.794777,
+      "time_sec": 5.68421
+    }
+  }
+}

@@ -1,0 +1,42 @@
+E3x / E4x / E5x Combined Summary
+
+This aggregation reads the latest existing aggregate CSV under each family folder.
+
+Source aggregate folders:
+- e3x: e31_e38/20260610_001624 (e31_e38/20260610_001624/e3x_latest_summary.csv)
+- e4x: e41_e48/20260610_001902 (e41_e48/20260610_001902/e4x_latest_summary.csv)
+- e5x: e51_e58/20260610_001909 (e51_e58/20260610_001909/e5x_latest_summary.csv)
+
+Bucket overview:
+- CCR_data ~= IDR_image
+  (0.10, 0.18]: qualified=480/500 (96.00%), HEFT_mean=77.1896, DHEFT_mean=41.4643, NHEFT_mean=41.2896, DHEFT_used_vCPU_mean=41.65, NHEFT_used_vCPU_mean=55.12, win_rate_N_over_D=56.67%, gain_mean=0.4496%
+  (0.18, 0.32]: qualified=360/500 (72.00%), HEFT_mean=102.5145, DHEFT_mean=42.0393, NHEFT_mean=41.7001, DHEFT_used_vCPU_mean=42.18, NHEFT_used_vCPU_mean=56.62, win_rate_N_over_D=56.39%, gain_mean=0.8380%
+  (0.32, 0.56]: qualified=293/500 (58.60%), HEFT_mean=167.6469, DHEFT_mean=46.1885, NHEFT_mean=44.7513, DHEFT_used_vCPU_mean=43.85, NHEFT_used_vCPU_mean=57.98, win_rate_N_over_D=72.70%, gain_mean=3.1004%
+  (0.56, 1.00]: qualified=273/500 (54.60%), HEFT_mean=258.5402, DHEFT_mean=55.9291, NHEFT_mean=50.0444, DHEFT_used_vCPU_mean=43.76, NHEFT_used_vCPU_mean=55.55, win_rate_N_over_D=91.21%, gain_mean=10.2775%
+  (1.00, 1.78]: qualified=292/500 (58.40%), HEFT_mean=402.7074, DHEFT_mean=73.2158, NHEFT_mean=56.6927, DHEFT_used_vCPU_mean=41.09, NHEFT_used_vCPU_mean=49.67, win_rate_N_over_D=97.95%, gain_mean=22.2697%
+  (1.78, 3.16]: qualified=289/500 (57.80%), HEFT_mean=631.1784, DHEFT_mean=99.4254, NHEFT_mean=68.7012, DHEFT_used_vCPU_mean=35.27, NHEFT_used_vCPU_mean=44.39, win_rate_N_over_D=99.65%, gain_mean=30.6211%
+  (3.16, 5.62]: qualified=289/500 (57.80%), HEFT_mean=1071.9341, DHEFT_mean=145.3038, NHEFT_mean=93.1249, DHEFT_used_vCPU_mean=28.58, NHEFT_used_vCPU_mean=40.46, win_rate_N_over_D=100.00%, gain_mean=35.4630%
+  (5.62, 10.00]: qualified=298/500 (59.60%), HEFT_mean=1913.5925, DHEFT_mean=226.9954, NHEFT_mean=142.4289, DHEFT_used_vCPU_mean=23.55, NHEFT_used_vCPU_mean=37.07, win_rate_N_over_D=100.00%, gain_mean=36.5667%
+  note: e31-e33: absolute tolerance <= 0.02 | e34-e38: relative tolerance <= 10%
+
+- CCR_data < IDR_image
+  (0.10, 0.18]: qualified=273/500 (54.60%), HEFT_mean=91.9558, DHEFT_mean=41.6099, NHEFT_mean=41.4122, DHEFT_used_vCPU_mean=41.94, NHEFT_used_vCPU_mean=55.89, win_rate_N_over_D=58.24%, gain_mean=0.5199%
+  (0.18, 0.32]: qualified=244/500 (48.80%), HEFT_mean=121.2755, DHEFT_mean=42.4667, NHEFT_mean=41.8159, DHEFT_used_vCPU_mean=42.87, NHEFT_used_vCPU_mean=57.61, win_rate_N_over_D=65.16%, gain_mean=1.5874%
+  (0.32, 0.56]: qualified=207/500 (41.40%), HEFT_mean=187.3032, DHEFT_mean=47.1664, NHEFT_mean=44.9118, DHEFT_used_vCPU_mean=44.60, NHEFT_used_vCPU_mean=58.51, win_rate_N_over_D=77.78%, gain_mean=4.6378%
+  (0.56, 1.00]: qualified=171/500 (34.20%), HEFT_mean=267.6424, DHEFT_mean=56.9146, NHEFT_mean=50.8295, DHEFT_used_vCPU_mean=44.72, NHEFT_used_vCPU_mean=55.01, win_rate_N_over_D=88.89%, gain_mean=10.4100%
+  (1.00, 1.78]: qualified=412/500 (82.40%), HEFT_mean=443.8862, DHEFT_mean=74.4592, NHEFT_mean=56.9310, DHEFT_used_vCPU_mean=42.18, NHEFT_used_vCPU_mean=48.19, win_rate_N_over_D=99.03%, gain_mean=23.3970%
+  (1.78, 3.16]: qualified=203/500 (40.60%), HEFT_mean=681.0137, DHEFT_mean=102.1019, NHEFT_mean=69.3877, DHEFT_used_vCPU_mean=35.10, NHEFT_used_vCPU_mean=44.33, win_rate_N_over_D=100.00%, gain_mean=31.7709%
+  (3.16, 5.62]: qualified=217/500 (43.40%), HEFT_mean=1183.5769, DHEFT_mean=151.1939, NHEFT_mean=96.4080, DHEFT_used_vCPU_mean=28.49, NHEFT_used_vCPU_mean=40.17, win_rate_N_over_D=100.00%, gain_mean=35.7498%
+  (5.62, 10.00]: qualified=264/500 (52.80%), HEFT_mean=2107.7864, DHEFT_mean=236.8774, NHEFT_mean=149.2580, DHEFT_used_vCPU_mean=23.64, NHEFT_used_vCPU_mean=36.61, win_rate_N_over_D=99.62%, gain_mean=36.2732%
+  note: all bins: relative CCR/IDR gap >= 20%
+
+- CCR_data > IDR_image
+  (0.10, 0.18]: qualified=458/500 (91.60%), HEFT_mean=62.5327, DHEFT_mean=41.3242, NHEFT_mean=41.2966, DHEFT_used_vCPU_mean=42.10, NHEFT_used_vCPU_mean=55.05, win_rate_N_over_D=48.91%, gain_mean=0.0510%
+  (0.18, 0.32]: qualified=389/500 (77.80%), HEFT_mean=84.3380, DHEFT_mean=41.8918, NHEFT_mean=41.9556, DHEFT_used_vCPU_mean=42.17, NHEFT_used_vCPU_mean=56.39, win_rate_N_over_D=47.30%, gain_mean=-0.1762%
+  (0.32, 0.56]: qualified=460/500 (92.00%), HEFT_mean=140.5131, DHEFT_mean=45.3972, NHEFT_mean=44.9785, DHEFT_used_vCPU_mean=43.13, NHEFT_used_vCPU_mean=57.53, win_rate_N_over_D=58.48%, gain_mean=0.8278%
+  (0.56, 1.00]: qualified=492/500 (98.40%), HEFT_mean=223.3113, DHEFT_mean=54.6544, NHEFT_mean=50.6496, DHEFT_used_vCPU_mean=42.57, NHEFT_used_vCPU_mean=56.20, win_rate_N_over_D=78.46%, gain_mean=7.0048%
+  (1.00, 1.78]: qualified=474/500 (94.80%), HEFT_mean=341.3217, DHEFT_mean=71.0665, NHEFT_mean=58.2660, DHEFT_used_vCPU_mean=39.40, NHEFT_used_vCPU_mean=50.00, win_rate_N_over_D=95.99%, gain_mean=17.5495%
+  (1.78, 3.16]: qualified=488/500 (97.60%), HEFT_mean=521.1477, DHEFT_mean=94.3772, NHEFT_mean=70.6686, DHEFT_used_vCPU_mean=33.17, NHEFT_used_vCPU_mean=44.81, win_rate_N_over_D=99.18%, gain_mean=24.5394%
+  (3.16, 5.62]: qualified=487/500 (97.40%), HEFT_mean=868.0977, DHEFT_mean=133.4273, NHEFT_mean=95.2999, DHEFT_used_vCPU_mean=27.29, NHEFT_used_vCPU_mean=40.78, win_rate_N_over_D=99.38%, gain_mean=27.8954%
+  (5.62, 10.00]: qualified=471/500 (94.20%), HEFT_mean=1538.6139, DHEFT_mean=199.1386, NHEFT_mean=144.8148, DHEFT_used_vCPU_mean=22.25, NHEFT_used_vCPU_mean=36.64, win_rate_N_over_D=98.30%, gain_mean=26.3488%
+  note: all bins: relative CCR/IDR gap >= 20%

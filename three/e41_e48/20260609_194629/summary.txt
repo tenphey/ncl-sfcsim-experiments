@@ -1,0 +1,27 @@
+E41-E48 Aggregated Summary
+
+This aggregation uses the latest run_* folder under each experiment directory.
+
+Runs used:
+- e41: experiments/e41/run_20260609_182509_151_100
+- e42: experiments/e42/run_20260609_184720_151_50
+- e43: experiments/e43/run_20260609_185646_151_50
+- e44: experiments/e44/run_20260609_190644_151_50
+- e45: experiments/e45/run_20260609_191554_151_50
+- e46: experiments/e46/run_20260609_192327_151_50
+- e47: experiments/e47/run_20260609_192744_151_50
+- e48: experiments/e48/run_20260609_193102_151_50
+
+Bucket overview:
+- e41 (0.10, 0.18]: qualified=56/100 (56.00%), HEFT_mean=93.9836, DHEFT_mean=41.6223, NHEFT_mean=41.6604, win_rate_N_over_D=50.00%, gain_mean=-0.0686%
+- e42 (0.18, 0.32]: qualified=29/50 (58.00%), HEFT_mean=120.7690, DHEFT_mean=42.1649, NHEFT_mean=41.1474, win_rate_N_over_D=79.31%, gain_mean=2.4893%
+- e43 (0.32, 0.56]: qualified=24/50 (48.00%), HEFT_mean=185.3191, DHEFT_mean=46.2780, NHEFT_mean=43.1956, win_rate_N_over_D=75.00%, gain_mean=6.4315%
+- e44 (0.56, 1.00]: qualified=20/50 (40.00%), HEFT_mean=276.7432, DHEFT_mean=55.1063, NHEFT_mean=47.6399, win_rate_N_over_D=95.00%, gain_mean=13.3760%
+- e45 (1.00, 1.78]: qualified=43/50 (86.00%), HEFT_mean=434.7543, DHEFT_mean=72.8094, NHEFT_mean=55.5518, win_rate_N_over_D=100.00%, gain_mean=23.5107%
+- e46 (1.78, 3.16]: qualified=22/50 (44.00%), HEFT_mean=672.9863, DHEFT_mean=101.6802, NHEFT_mean=67.6659, win_rate_N_over_D=100.00%, gain_mean=33.0419%
+- e47 (3.16, 5.62]: qualified=23/50 (46.00%), HEFT_mean=1177.3961, DHEFT_mean=151.0855, NHEFT_mean=98.4043, win_rate_N_over_D=100.00%, gain_mean=34.4064%
+- e48 (5.62, 10.00]: qualified=29/50 (58.00%), HEFT_mean=2147.9301, DHEFT_mean=232.9247, NHEFT_mean=149.1845, win_rate_N_over_D=100.00%, gain_mean=35.0377%
+
+Constraint notes:
+- e41-e48 all require CCR_data < IDR_image
+- e41-e48 all require relative CCR/IDR gap >= 20%

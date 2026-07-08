@@ -1,0 +1,20 @@
+{
+  "b2": {
+    "5804": {
+      "HEFT": 225.5475,
+      "DHEFT": 65.2337,
+      "NHEFT": 68.081974,
+      "gain_N_over_D_percent": -4.366261,
+      "nheft_minus_dheft": 2.848274,
+      "time_sec": 3.935771
+    },
+    "6820": {
+      "HEFT": 212.92,
+      "DHEFT": 55.1352,
+      "NHEFT": 56.265756,
+      "gain_N_over_D_percent": -2.050516,
+      "nheft_minus_dheft": 1.130556,
+      "time_sec": 4.648963
+    }
+  }
+}

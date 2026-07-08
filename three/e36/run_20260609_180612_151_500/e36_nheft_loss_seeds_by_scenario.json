@@ -1,0 +1,12 @@
+{
+  "b36": {
+    "4730": {
+      "HEFT": 503.3414,
+      "DHEFT": 105.4224,
+      "NHEFT": 121.293,
+      "gain_N_over_D_percent": -15.054296,
+      "nheft_minus_dheft": 15.8706,
+      "time_sec": 6.522039
+    }
+  }
+}

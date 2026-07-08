@@ -1,0 +1,12 @@
+{
+  "experiment": "E24 - Fixed B4 Scenario (No Variable Sweep)",
+  "scenario": "1 < NCCR_total < 2 AND CCR_data > IDR_image",
+  "timestamp": "20260601_134918",
+  "master_seed": 150,
+  "num_seeds": 1,
+  "seeds_used": [
+    6347
+  ],
+  "total_runs": 1,
+  "dry_run": true
+}

@@ -1,0 +1,27 @@
+E41-E48 Aggregated Summary
+
+This aggregation uses the latest run_* folder under each experiment directory.
+
+Runs used:
+- e41: experiments/e41/run_20260609_195049_151_500
+- e42: experiments/e42/run_20260609_195057_151_500
+- e43: experiments/e43/run_20260609_195115_151_500
+- e44: experiments/e44/run_20260609_195124_151_500
+- e45: experiments/e45/run_20260609_195131_151_500
+- e46: experiments/e46/run_20260609_195141_151_500
+- e47: experiments/e47/run_20260609_195151_151_500
+- e48: experiments/e48/run_20260609_195202_151_500
+
+Bucket overview:
+- e41 (0.10, 0.18]: qualified=273/500 (54.60%), HEFT_mean=91.9558, DHEFT_mean=41.6099, NHEFT_mean=41.4122, DHEFT_used_vCPU_mean=41.94, NHEFT_used_vCPU_mean=55.89, win_rate_N_over_D=58.24%, gain_mean=0.5199%
+- e42 (0.18, 0.32]: qualified=244/500 (48.80%), HEFT_mean=121.2755, DHEFT_mean=42.4667, NHEFT_mean=41.8159, DHEFT_used_vCPU_mean=42.87, NHEFT_used_vCPU_mean=57.61, win_rate_N_over_D=65.16%, gain_mean=1.5874%
+- e43 (0.32, 0.56]: qualified=207/500 (41.40%), HEFT_mean=187.3032, DHEFT_mean=47.1664, NHEFT_mean=44.9118, DHEFT_used_vCPU_mean=44.60, NHEFT_used_vCPU_mean=58.51, win_rate_N_over_D=77.78%, gain_mean=4.6378%
+- e44 (0.56, 1.00]: qualified=171/500 (34.20%), HEFT_mean=267.6424, DHEFT_mean=56.9146, NHEFT_mean=50.8295, DHEFT_used_vCPU_mean=44.72, NHEFT_used_vCPU_mean=55.01, win_rate_N_over_D=88.89%, gain_mean=10.4100%
+- e45 (1.00, 1.78]: qualified=412/500 (82.40%), HEFT_mean=443.8862, DHEFT_mean=74.4592, NHEFT_mean=56.9310, DHEFT_used_vCPU_mean=42.18, NHEFT_used_vCPU_mean=48.19, win_rate_N_over_D=99.03%, gain_mean=23.3970%
+- e46 (1.78, 3.16]: qualified=203/500 (40.60%), HEFT_mean=681.0137, DHEFT_mean=102.1019, NHEFT_mean=69.3877, DHEFT_used_vCPU_mean=35.10, NHEFT_used_vCPU_mean=44.33, win_rate_N_over_D=100.00%, gain_mean=31.7709%
+- e47 (3.16, 5.62]: qualified=217/500 (43.40%), HEFT_mean=1183.5769, DHEFT_mean=151.1939, NHEFT_mean=96.4080, DHEFT_used_vCPU_mean=28.49, NHEFT_used_vCPU_mean=40.17, win_rate_N_over_D=100.00%, gain_mean=35.7498%
+- e48 (5.62, 10.00]: qualified=264/500 (52.80%), HEFT_mean=2107.7864, DHEFT_mean=236.8774, NHEFT_mean=149.2580, DHEFT_used_vCPU_mean=23.64, NHEFT_used_vCPU_mean=36.61, win_rate_N_over_D=99.62%, gain_mean=36.2732%
+
+Constraint notes:
+- e41-e48 all require CCR_data < IDR_image
+- e41-e48 all require relative CCR/IDR gap >= 20%

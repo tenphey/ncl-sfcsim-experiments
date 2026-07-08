@@ -1,0 +1,12 @@
+{
+  "b1": {
+    "6347": {
+      "HEFT": 53.904,
+      "DHEFT": 34.5309,
+      "NHEFT": 38.403592,
+      "gain_N_over_D_percent": -11.215151,
+      "nheft_minus_dheft": 3.872692,
+      "time_sec": 3.415468
+    }
+  }
+}
