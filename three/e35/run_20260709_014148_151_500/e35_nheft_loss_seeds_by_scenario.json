@@ -1,0 +1,52 @@
+{
+  "b35": {
+    "3147": {
+      "HEFT": 699.0508,
+      "DHEFT": 75.4655,
+      "NHEFT": 82.680638,
+      "gain_N_over_D_percent": -9.560843,
+      "nheft_minus_dheft": 7.215138,
+      "time_sec": 7.575439
+    },
+    "6064": {
+      "HEFT": 581.8217,
+      "DHEFT": 73.4747,
+      "NHEFT": 73.929157,
+      "gain_N_over_D_percent": -0.618522,
+      "nheft_minus_dheft": 0.454457,
+      "time_sec": 5.482852
+    },
+    "7593": {
+      "HEFT": 317.2579,
+      "DHEFT": 58.3737,
+      "NHEFT": 69.443198,
+      "gain_N_over_D_percent": -18.96316,
+      "nheft_minus_dheft": 11.069498,
+      "time_sec": 5.602347
+    },
+    "8199": {
+      "HEFT": 367.0532,
+      "DHEFT": 64.2659,
+      "NHEFT": 67.2665,
+      "gain_N_over_D_percent": -4.669039,
+      "nheft_minus_dheft": 3.0006,
+      "time_sec": 5.852717
+    },
+    "9410": {
+      "HEFT": 375.8221,
+      "DHEFT": 70.6504,
+      "NHEFT": 75.564454,
+      "gain_N_over_D_percent": -6.955452,
+      "nheft_minus_dheft": 4.914054,
+      "time_sec": 6.796356
+    },
+    "9524": {
+      "HEFT": 328.9134,
+      "DHEFT": 66.8111,
+      "NHEFT": 67.644114,
+      "gain_N_over_D_percent": -1.246819,
+      "nheft_minus_dheft": 0.833014,
+      "time_sec": 5.290509
+    }
+  }
+}

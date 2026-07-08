@@ -1,8 +1,15 @@
 # Shared Java runtime configuration for the experiments project.
+# Copy this file to `java_runtime.properties` and adjust it only if needed.
+#
 # `project_root` should point to the Java simulator project root.
-# It may be an absolute path or a path relative to the experiments directory.
+# It may be:
+# - a path relative to the `experiments/` directory, or
+# - an absolute path.
+#
+# If `experiments/` is located directly under the simulator root,
+# `project_root=..` is usually correct.
 
-project_root=/*/*/*/*/ncl_sfcsim
+project_root=..
 java_bin=java
 java_heap=-Xmx1000m
 classes_dir_rel=classes
