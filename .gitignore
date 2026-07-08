@@ -75,7 +75,7 @@ dist/
 
 logs/
 *.log
-
+java_runtime.properties
 
 
 

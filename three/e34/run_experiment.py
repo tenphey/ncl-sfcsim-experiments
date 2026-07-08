@@ -21,18 +21,11 @@ import time
 from datetime import datetime
 
 # Configuration
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+THREE_DIR = os.path.dirname(THIS_DIR)
+EXPERIMENTS_DIR = os.path.dirname(THREE_DIR)
+JAVA_RUNTIME_PROPS = os.path.join(EXPERIMENTS_DIR, "java_runtime.properties")
 BASE_PROPS = os.path.join(THIS_DIR, "b34.properties")
-
-# Java command
-JAVA_CMD_BASE = [
-    "java",
-    "-Xmx1000m",
-    "-cp",
-    f"{REPO_ROOT}/classes:{REPO_ROOT}/lib/*",
-    "net.gripps.cloud.nfv.main.NFVSchedulingTest",
-]
 
 DRY_RUN = int(os.getenv("E34_DRY_RUN", "0")) == 1
 LIMIT_RUNS = int(os.getenv("E34_LIMIT_RUNS", "0"))
@@ -61,6 +54,40 @@ def read_props(path):
                     k, v = line.split("=", 1)
                     props[k.strip()] = v.strip()
     return props
+
+
+def require_prop(props, key):
+    value = props.get(key, "").strip()
+    if not value:
+        raise RuntimeError(f"Missing required property '{key}' in {JAVA_RUNTIME_PROPS}")
+    return value
+
+
+def build_java_cmd_base():
+    java_runtime = read_props(JAVA_RUNTIME_PROPS)
+
+    project_root_raw = require_prop(java_runtime, "project_root")
+    if os.path.isabs(project_root_raw):
+        project_root = os.path.normpath(project_root_raw)
+    else:
+        project_root = os.path.normpath(os.path.join(EXPERIMENTS_DIR, project_root_raw))
+
+    java_bin = require_prop(java_runtime, "java_bin")
+    java_heap = require_prop(java_runtime, "java_heap")
+    classes_dir_rel = require_prop(java_runtime, "classes_dir_rel")
+    lib_glob_rel = require_prop(java_runtime, "lib_glob_rel")
+    main_class = require_prop(java_runtime, "main_class")
+
+    classes_dir = os.path.normpath(os.path.join(project_root, classes_dir_rel))
+    lib_glob = os.path.normpath(os.path.join(project_root, lib_glob_rel))
+
+    return [
+        java_bin,
+        java_heap,
+        "-cp",
+        f"{classes_dir}:{lib_glob}",
+        main_class,
+    ]
 
 
 def write_props(props, path):
@@ -93,6 +120,7 @@ def extract_makespans(output):
 
 
 def main():
+    java_cmd_base = build_java_cmd_base()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = os.path.join(THIS_DIR, f"run_{timestamp}_{MASTER_SEED}_{NUM_SEEDS_DEFAULT}")
     os.makedirs(out_dir, exist_ok=True)
@@ -130,7 +158,7 @@ def main():
         write_props(props, tmp.name)
         tmp.close()
 
-        cmd = JAVA_CMD_BASE + [tmp.name]
+        cmd = java_cmd_base + [tmp.name]
 
         print(f"[{run_count}/{total_runs}] seed={s}", end="")
 
@@ -217,6 +245,12 @@ def main():
         with open(BASE_PROPS) as src:
             content = src.read()
         with open(os.path.join(out_dir, "b34_properties_snapshot.properties"), "w") as dst:
+            dst.write(content)
+
+    if os.path.exists(JAVA_RUNTIME_PROPS):
+        with open(JAVA_RUNTIME_PROPS) as src:
+            content = src.read()
+        with open(os.path.join(out_dir, "java_runtime_snapshot.properties"), "w") as dst:
             dst.write(content)
 
 
