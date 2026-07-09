@@ -1,0 +1,36 @@
+{
+  "b56": {
+    "1751": {
+      "HEFT": 429.6811,
+      "DHEFT": 82.9354,
+      "NHEFT": 95.259379,
+      "gain_N_over_D_percent": -14.859733,
+      "nheft_minus_dheft": 12.323979,
+      "time_sec": 7.535057
+    },
+    "2471": {
+      "HEFT": 607.576,
+      "DHEFT": 93.172,
+      "NHEFT": 100.487937,
+      "gain_N_over_D_percent": -7.852077,
+      "nheft_minus_dheft": 7.315937,
+      "time_sec": 6.306137
+    },
+    "2986": {
+      "HEFT": 445.3619,
+      "DHEFT": 67.8048,
+      "NHEFT": 69.75301,
+      "gain_N_over_D_percent": -2.873262,
+      "nheft_minus_dheft": 1.94821,
+      "time_sec": 6.535848
+    },
+    "9018": {
+      "HEFT": 364.6582,
+      "DHEFT": 74.9383,
+      "NHEFT": 76.660509,
+      "gain_N_over_D_percent": -2.298169,
+      "nheft_minus_dheft": 1.722209,
+      "time_sec": 6.995051
+    }
+  }
+}
