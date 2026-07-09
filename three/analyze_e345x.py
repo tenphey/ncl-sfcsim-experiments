@@ -68,6 +68,16 @@ ALGO_COLORS = {
     "DHEFT": "#FF6B6B",
     "NHEFT": "#06A77D",
 }
+FAMILY_CASE_COLORS = {
+    "e3x": "#4E79A7",
+    "e4x": "#F28E2B",
+    "e5x": "#59A14F",
+}
+FAMILY_CASE_MARKERS = {
+    "e3x": "o",
+    "e4x": "s",
+    "e5x": "^",
+}
 
 # 是否在柱状图中显示 HEFT 柱子。
 # 论文图里如果只想突出 DHEFT vs NHEFT，通常保持 False。
@@ -87,21 +97,43 @@ SHOW_GAIN_RATE_LINE = False
 FAMILY_MAKESPAN_YMAX_RATIO = 1.45
 FAMILY_VCPU_YMAX_RATIO = 1.20
 CASE_BALANCED_MAKESPAN_YMAX_RATIO = 1.1
-CASE_BALANCED_VCPU_YMAX_RATIO = 1.1
+CASE_BALANCED_VCPU_YMAX_RATIO = 1.2
 GAIN_ZERO_LIFT_RATIO = 0.35
 WIN_RATE_AXIS_MAX = 105.0
 
+# 柱状图与通用图的坐标轴标题字号，例如 "NCCR Bucket"、"Mean Makespan"。
 AXIS_LABEL_FONTSIZE = 30
+# 图级别主标题字号，仅在 SHOW_EXTRA_FIGURE_TITLES=True 时显示。
 TITLE_FONTSIZE = 28
+# 三联柱状图中每个小 panel 标题字号，例如 "CCR ~= IDR"。
 SUBTITLE_FONTSIZE = 18
+# 柱状图横轴刻度字号，即 bucket 区间文字的字号。
 XTICK_FONTSIZE = 30
+# 柱状图纵轴刻度字号。
 YTICK_FONTSIZE = 30
+# 柱子顶部数值标注字号。
 BAR_LABEL_FONTSIZE = 20
+# 叠加折线时，折线点旁边百分比数字的字号。
 LINE_ANNOTATION_FONTSIZE = 11
+# 图底部补充说明文字字号，仅在 SHOW_EXTRA_FIGURE_TITLES=True 时显示。
 FOOTNOTE_FONTSIZE = 13
-LEGEND_FONTSIZE = 14
+# 柱状图图例字号。
+LEGEND_FONTSIZE = 25
+# PNG 表格标题字号，仅在 SHOW_EXTRA_FIGURE_TITLES=True 时显示。
 TABLE_TITLE_FONTSIZE = 18
+# PNG 表格内部单元格文字字号。
 TABLE_BODY_FONTSIZE = 12
+
+# 折线图专用：横纵轴标题字号，例如 "NCCR Bucket"、"Gain Rate (%)"。
+LINE_CHART_AXIS_LABEL_FONTSIZE = 30
+# 折线图专用：主标题字号，仅在 SHOW_EXTRA_FIGURE_TITLES=True 时显示。
+LINE_CHART_TITLE_FONTSIZE = 28
+# 折线图专用：横轴 bucket 区间文字字号。
+LINE_CHART_XTICK_FONTSIZE = 30
+# 折线图专用：纵轴刻度字号。
+LINE_CHART_YTICK_FONTSIZE = 30
+# 折线图专用：图例字号。
+LINE_CHART_LEGEND_FONTSIZE = 25
 
 BAR_LABEL_BASE_Y_OFFSET = 4
 BAR_LABEL_X_OFFSET_POINTS = 10
@@ -595,6 +627,10 @@ def append_suffix_before_ext(path, suffix):
     return f"{root}{suffix}{ext}"
 
 
+def format_bucket_label_multiline(label):
+    return label.replace(", ", ",\n")
+
+
 def draw_case_balanced_mean_makespan_chart(df, out_path, title_suffix=""):
     fig, ax = plt.subplots(figsize=(20, 10))
 
@@ -961,6 +997,81 @@ def draw_table_image(display_df, title, out_path, note=None):
     plt.close(fig)
 
 
+def draw_rate_line_chart(df, metric_kind, out_path):
+    fig, ax = plt.subplots(figsize=(18, 8.5))
+
+    x = np.arange(len(BUCKET_ORDER))
+    plotted_values = []
+
+    if metric_kind == "gain":
+        value_col = "gain_N_over_D_mean"
+        y_label = "Gain Rate (%)"
+        title = "Gain Rate Comparison across NCCR Buckets"
+    elif metric_kind == "win":
+        value_col = "win_rate_N_over_D"
+        y_label = "Win Rate (%)"
+        title = "Win Rate Comparison across NCCR Buckets"
+    else:
+        raise ValueError(f"Unknown metric_kind: {metric_kind}")
+
+    for spec in FAMILIES:
+        panel_df = df[df["family_key"] == spec["family_key"]].copy()
+        panel_df = panel_df.sort_values("bucket_sort_key")
+        panel_df = panel_df.set_index("bucket_label").reindex(BUCKET_ORDER).reset_index()
+
+        values = panel_df[value_col].to_numpy(dtype=float)
+        if metric_kind == "win":
+            values = values * 100.0
+
+        valid_values = values[np.isfinite(values)]
+        if valid_values.size > 0:
+            plotted_values.extend(valid_values.tolist())
+
+        ax.plot(
+            x,
+            values,
+            color=FAMILY_CASE_COLORS[spec["family_key"]],
+            marker=FAMILY_CASE_MARKERS[spec["family_key"]],
+            markersize=9,
+            linewidth=2.8,
+            label=spec["family_short"],
+        )
+
+    ax.set_xlabel("NCCR Bucket", fontsize=LINE_CHART_AXIS_LABEL_FONTSIZE)
+    ax.set_ylabel(y_label, fontsize=LINE_CHART_AXIS_LABEL_FONTSIZE)
+    if SHOW_EXTRA_FIGURE_TITLES:
+        ax.set_title(title, fontsize=LINE_CHART_TITLE_FONTSIZE, fontweight="bold", pad=14)
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(
+        [format_bucket_label_multiline(label) for label in BUCKET_ORDER],
+        rotation=0,
+        fontsize=LINE_CHART_XTICK_FONTSIZE,
+    )
+    ax.tick_params(axis="y", labelsize=LINE_CHART_YTICK_FONTSIZE)
+    ax.grid(axis="y", linestyle="--", alpha=0.35)
+    ax.set_axisbelow(True)
+
+    if plotted_values:
+        y_min = min(plotted_values)
+        y_max = max(plotted_values)
+        if metric_kind == "win":
+            upper = max(WIN_RATE_AXIS_MAX, y_max + 5.0)
+            ax.set_ylim(0.0, upper)
+        else:
+            span = max(1.0, y_max - y_min)
+            lower = min(0.0, y_min - span * 0.18)
+            upper = y_max + span * 0.18
+            ax.set_ylim(lower, upper)
+
+    legend = ax.legend(loc="best", frameon=True, fontsize=LINE_CHART_LEGEND_FONTSIZE)
+    legend.get_frame().set_alpha(0.95)
+
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+
 def draw_metric_tables(df, out_dir):
     makespan_df = build_metric_table_df(df, "makespan")
     gain_df = build_metric_table_df(df, "gain")
@@ -1053,6 +1164,8 @@ def main():
 
     case_balanced_makespan_png = os.path.join(out_dir, "makespan_mean_comparison_ccr_idr_mean.png")
     case_balanced_vcpu_png = os.path.join(out_dir, "vcpu_usage_comparison_ccr_idr_mean.png")
+    gain_rate_line_png = os.path.join(out_dir, "gain_rate_comparison.png")
+    win_rate_line_png = os.path.join(out_dir, "win_rate_comparison.png")
     case_balanced_specs = build_case_balanced_output_specs(
         case_balanced_mean_df, args.case_balanced_bucket_count
     )
@@ -1072,11 +1185,15 @@ def main():
         case_balanced_vcpu_outputs.append(vcpu_out)
 
     draw_metric_tables(df, out_dir)
+    draw_rate_line_chart(df, "gain", gain_rate_line_png)
+    draw_rate_line_chart(df, "win", win_rate_line_png)
 
     print(f"[OK] Output directory: {out_dir}")
     print(f"[OK] Summary CSV: {out_csv}")
     print(f"[OK] Makespan figure: {makespan_png}")
     print(f"[OK] vCPU figure: {vcpu_png}")
+    print(f"[OK] Gain rate figure: {gain_rate_line_png}")
+    print(f"[OK] Win rate figure: {win_rate_line_png}")
     print(f"[OK] Case-balanced mean CSV: {case_balanced_mean_csv}")
     for path in case_balanced_makespan_outputs:
         print(f"[OK] Case-balanced mean makespan figure: {path}")
