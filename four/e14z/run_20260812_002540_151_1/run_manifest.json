@@ -1,0 +1,42 @@
+{
+  "experiment": "E14Z - NHEFT computation-advantage gate",
+  "purpose": "Compare HEFT, DHEFT, baseline NHEFT, and GHEFT with only the computation-advantage gate enabled under the data-dominant third-bucket scenario.",
+  "timestamp": "20260812_002540",
+  "project_root": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t",
+  "base_properties": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/four/e14z/b14z.properties",
+  "java_runtime_properties": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/java_runtime.properties",
+  "master_seed": 151,
+  "num_seeds": 1,
+  "seeds_used": [
+    741896
+  ],
+  "variants": [
+    {
+      "label": "baseline",
+      "display_label": "NHEFT",
+      "tolerance": "0.0",
+      "comp_advantage": "0",
+      "drt_advantage": "0",
+      "irt_advantage": "0",
+      "description": "Current NHEFT behavior: globally minimum EFT candidate."
+    },
+    {
+      "label": "comp_advantage",
+      "display_label": "NHEFT+CompGate",
+      "tolerance": "0.0",
+      "comp_advantage": "1",
+      "drt_advantage": "0",
+      "irt_advantage": "0",
+      "description": "Open a new vCPU only when it has earlier EFT and shorter computation time than the best already-used vCPU."
+    }
+  ],
+  "loop_order": "seed_only_single_java_invocation",
+  "total_planned_runs": 1,
+  "completed_runs": 1,
+  "status_counts": {
+    "dry_run": 1
+  },
+  "dry_run": true,
+  "timeout_seconds": 180,
+  "interrupted": false
+}

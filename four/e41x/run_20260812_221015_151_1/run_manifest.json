@@ -1,0 +1,34 @@
+{
+  "experiment": "E41X",
+  "purpose": "Standalone GHEFT run for E41X using the shared E01X communication scenario. Shared HEFT/DHEFT/NHEFT baselines should be taken from the corresponding common scenario run.",
+  "timestamp": "20260812_221015",
+  "project_root": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t",
+  "base_properties": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/four/e01x/b01x.properties",
+  "java_runtime_properties": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/java_runtime.properties",
+  "master_seed": 151,
+  "num_seeds": 1,
+  "seeds_used": [
+    741896
+  ],
+  "variants": [
+    {
+      "label": "drt_or_irt",
+      "display_label": "GHEFT",
+      "tolerance": "0.0",
+      "comp_advantage": "0",
+      "drt_advantage": "1",
+      "irt_advantage": "1",
+      "gate_logic": "any",
+      "description": "Run only GHEFT with the DRT-or-IRT opening gate under the shared E01X scenario."
+    }
+  ],
+  "loop_order": "seed_only_single_java_invocation_gheft_only",
+  "total_planned_runs": 1,
+  "completed_runs": 1,
+  "status_counts": {
+    "ok": 1
+  },
+  "dry_run": false,
+  "timeout_seconds": 180,
+  "interrupted": false
+}

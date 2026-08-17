@@ -1,0 +1,29 @@
+{
+  "analysis": "E11Y NHEFT computation-advantage gate analysis",
+  "timestamp": "20260812_011216",
+  "result_dir": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/four/e11y/run_20260811_235822_151_500",
+  "raw_csv": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/four/e11y/run_20260811_235822_151_500/e11y_results.csv",
+  "raw_rows": 1000,
+  "ok_rows": 1000,
+  "scenario_ok_rows": 548,
+  "complete_ok_rows": 548,
+  "complete_seeds": 274,
+  "incomplete_seeds": 0,
+  "paired_rows": 548,
+  "paired_seeds": 274,
+  "complete_seed_rule": "Only seeds with all expected E11Y variants are included in summaries and plots.",
+  "expected_variants_for_complete_seed": [
+    "baseline",
+    "comp_advantage"
+  ],
+  "baseline": "variant=baseline is treated as current NHEFT behavior",
+  "notes": [
+    "Makespan change vs baseline is positive when the variant is slower.",
+    "vCPU reduction vs baseline is positive when the variant uses fewer vCPUs.",
+    "Gain over DHEFT is the mean of per-run gains, not the gain from bucket-level means."
+  ],
+  "variants": [
+    "baseline",
+    "comp_advantage"
+  ]
+}
