@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Aggregate all E3X bucket results into one cross-bucket overview.
+"""Aggregate all E3X bucket results into cross-bucket overview figures.
 
 This script combines the latest raw results of:
 
@@ -17,11 +17,19 @@ A seed is counted only when:
   - the GHEFT side has a valid `irt_only` row
   - both rows satisfy the same bucket + x-condition
 
-The output is one overview figure:
+The output includes one full overview and two four-bucket split figures:
 
   - x axis: 8 NCCR buckets
   - left y axis: DHEFT / NHEFT / GHEFT mean makespan lines
   - right y axis: DHEFT / NHEFT / GHEFT mean used-vCPU bars
+
+The split figures use the same filtered summary data as the full overview:
+
+  - e3x_makespan_vcpu_overview-1.png: lower four NCCR buckets
+  - e3x_makespan_vcpu_overview-2.png: upper four NCCR buckets
+
+Set `TARGET_SEED_COUNT` below to select the newest run whose directory name
+ends with that seed count, for example `run_..._2000`.
 
 Usage from the simulator repository root:
 
@@ -57,6 +65,10 @@ PLOT_DPI = 300
 FIGSIZE_OVERVIEW = (13.8, 7.6)
 BALANCED_ABS_TOL = float(os.getenv("E3X_ABS_TOL", "0.02"))
 
+# Select the newest run_*_<seed_count> result for every baseline/GHEFT bucket.
+# Change only this value when switching between 500, 2000, or a future count.
+TARGET_SEED_COUNT = 500
+
 BASE_VARIANT = "baseline"
 GATE_VARIANT = "irt_only"
 
@@ -74,7 +86,7 @@ BUCKET_SPECS = [
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Aggregate baseline e01x-e08x and GHEFT e31x-e38x into one x-condition overview figure."
+        description="Aggregate baseline e01x-e08x and GHEFT e31x-e38x into full and split x-condition overview figures."
     )
     parser.add_argument(
         "--output-dir",
@@ -117,16 +129,22 @@ def safe_ratio_pct(part, whole):
     return part_val / whole_val * 100.0
 
 
-def find_latest_run_dir(bucket_dir, raw_csv_name):
+def find_latest_run_dir(bucket_dir, raw_csv_name, target_seed_count):
     candidates = []
     if not os.path.isdir(bucket_dir):
         return None
 
     for name in os.listdir(bucket_dir):
+        try:
+            run_seed_count = int(name.rsplit("_", 1)[-1])
+        except (TypeError, ValueError):
+            continue
+
         path = os.path.join(bucket_dir, name)
         if (
             os.path.isdir(path)
             and name.startswith("run_")
+            and run_seed_count == target_seed_count
             and os.path.exists(os.path.join(path, raw_csv_name))
         ):
             candidates.append(path)
@@ -410,7 +428,7 @@ def annotate_line_points(ax, x_values, y_values, color, fmt):
         )
 
 
-def save_overview_plot(summary_df, output_dir):
+def save_overview_plot(summary_df, output_dir, filename, title):
     x = np.arange(len(summary_df))
     bucket_labels = summary_df["bucket_label"].tolist()
 
@@ -525,13 +543,48 @@ def save_overview_plot(summary_df, output_dir):
     ]
     labels = [handle.get_label() for handle in handles]
     ax_m.legend(handles, labels, loc="upper left", fontsize=9, ncol=2)
-    ax_m.set_title("E3X overview: baseline vs IRT-only GHEFT across 8 buckets")
+    ax_m.set_title(title)
 
     fig.tight_layout()
-    output_path = os.path.join(output_dir, "e3x_makespan_vcpu_overview.png")
+    output_path = os.path.join(output_dir, filename)
     fig.savefig(output_path, dpi=PLOT_DPI)
     plt.close(fig)
     return output_path
+
+
+def save_all_overview_plots(summary_df, output_dir):
+    ordered_df = summary_df.reset_index(drop=True)
+    plot_specs = [
+        (
+            ordered_df,
+            "e3x_makespan_vcpu_overview.png",
+            "E3X overview: baseline vs IRT-only GHEFT across 8 buckets",
+        ),
+        (
+            ordered_df.iloc[:4].reset_index(drop=True),
+            "e3x_makespan_vcpu_overview-1.png",
+            "E3X overview: baseline vs IRT-only GHEFT (lower 4 buckets)",
+        ),
+        (
+            ordered_df.iloc[4:8].reset_index(drop=True),
+            "e3x_makespan_vcpu_overview-2.png",
+            "E3X overview: baseline vs IRT-only GHEFT (upper 4 buckets)",
+        ),
+    ]
+
+    output_paths = []
+    for plot_df, filename, title in plot_specs:
+        if plot_df.empty:
+            continue
+        output_paths.append(
+            save_overview_plot(
+                summary_df=plot_df,
+                output_dir=output_dir,
+                filename=filename,
+                title=title,
+            )
+        )
+    return output_paths
 
 
 def format_md_int(value):
@@ -617,6 +670,7 @@ def write_manifest(output_dir, summary_df):
         "analysis": "E3X cross-bucket aggregation",
         "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
         "bucket_count": int(len(summary_df)),
+        "target_seed_count": TARGET_SEED_COUNT,
         "balanced_abs_tol": BALANCED_ABS_TOL,
         "gate_variant": GATE_VARIANT,
         "note": (
@@ -634,7 +688,9 @@ def write_manifest(output_dir, summary_df):
 def main():
     args = parse_args()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_dir = args.output_dir or os.path.join(THIS_DIR, f"analysis_{timestamp}")
+    output_dir = args.output_dir or os.path.join(
+        THIS_DIR, f"analysis_{timestamp}_{TARGET_SEED_COUNT}"
+    )
     os.makedirs(output_dir, exist_ok=True)
 
     summary_rows = []
@@ -645,15 +701,21 @@ def main():
         baseline_csv_name = f"{baseline_key}_results.csv"
         gate_csv_name = f"{gate_key}_results.csv"
 
-        baseline_run_dir = find_latest_run_dir(baseline_dir, baseline_csv_name)
-        gate_run_dir = find_latest_run_dir(gate_dir, gate_csv_name)
+        baseline_run_dir = find_latest_run_dir(
+            baseline_dir, baseline_csv_name, TARGET_SEED_COUNT
+        )
+        gate_run_dir = find_latest_run_dir(
+            gate_dir, gate_csv_name, TARGET_SEED_COUNT
+        )
         if baseline_run_dir is None:
             raise RuntimeError(
-                f"No run_* directory with {baseline_csv_name} found under {baseline_dir}"
+                f"No run_*_{TARGET_SEED_COUNT} directory with {baseline_csv_name} "
+                f"found under {baseline_dir}"
             )
         if gate_run_dir is None:
             raise RuntimeError(
-                f"No run_* directory with {gate_csv_name} found under {gate_dir}"
+                f"No run_*_{TARGET_SEED_COUNT} directory with {gate_csv_name} "
+                f"found under {gate_dir}"
             )
 
         baseline_manifest = read_manifest(baseline_run_dir)
@@ -691,15 +753,17 @@ def main():
     summary_df = pd.DataFrame(summary_rows)
     summary_csv = os.path.join(output_dir, "e3x_bucket_summary.csv")
     summary_df.to_csv(summary_csv, index=False)
-    plot_path = save_overview_plot(summary_df, output_dir)
+    plot_paths = save_all_overview_plots(summary_df, output_dir)
     coverage_md_path = write_seed_coverage_md(output_dir, summary_df)
     write_manifest(output_dir, summary_df)
 
     print("E3X cross-bucket aggregation complete.")
+    print(f"Target seed count: {TARGET_SEED_COUNT}")
     print(f"Output dir: {relpath(output_dir)}")
     print(f"Summary CSV: {relpath(summary_csv)}")
     print(f"Coverage MD: {relpath(coverage_md_path)}")
-    print(f"Plot: {relpath(plot_path)}")
+    for plot_path in plot_paths:
+        print(f"Plot: {relpath(plot_path)}")
 
 
 if __name__ == "__main__":
