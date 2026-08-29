@@ -85,6 +85,12 @@ SHOW_HEFT_BAR = False
 # 是否显示“图级别”的额外标题和底部说明文字。
 # 论文出图通常保持 False，把说明放到 caption 和正文里。
 SHOW_EXTRA_FIGURE_TITLES = False
+# 是否在 CCR/IDR 三种情况取均值后的 makespan 图内显示主标题。
+# 论文已经使用 figure caption，因此默认关闭，避免图内标题与 caption 重复。
+SHOW_CASE_BALANCED_MAKESPAN_TITLE = False
+# 是否显示该 makespan 图底部的横坐标名称 "NCCR Bucket"。
+# bucket 区间刻度仍然保留；论文图默认关闭横坐标名称以进一步节省高度。
+SHOW_CASE_BALANCED_MAKESPAN_X_AXIS_LABEL = False
 # 是否在 makespan 图上叠加 win rate 折线。
 # 为了避免论文图过于拥挤，默认关闭。
 SHOW_WIN_RATE_LINE = False
@@ -100,6 +106,15 @@ CASE_BALANCED_MAKESPAN_YMAX_RATIO = 1.1
 CASE_BALANCED_VCPU_YMAX_RATIO = 1.2
 GAIN_ZERO_LIFT_RATIO = 0.35
 WIN_RATE_AXIS_MAX = 105.0
+
+# CCR/IDR 三种情况取均值后的 makespan 图尺寸。
+# 当横轴按 4 个 bucket 拆成 -1/-2 两张论文图时，只把高度缩放为原来的 0.5。
+# 8 个 bucket 保存在一张图时仍使用原来的完整高度，避免影响旧版设计。
+CASE_BALANCED_MAKESPAN_FIG_WIDTH = 20
+CASE_BALANCED_MAKESPAN_FIG_HEIGHT = 10
+CASE_BALANCED_MAKESPAN_SPLIT_HEIGHT_SCALE = 0.5
+# 半高图需要更多柱顶留白，避免图例遮住柱顶数值。
+CASE_BALANCED_MAKESPAN_SPLIT_YMAX_RATIO = 1.30
 
 # 柱状图与通用图的坐标轴标题字号，例如 "NCCR Bucket"、"Mean Makespan"。
 AXIS_LABEL_FONTSIZE = 30
@@ -631,8 +646,17 @@ def format_bucket_label_multiline(label):
     return label.replace(", ", ",\n")
 
 
-def draw_case_balanced_mean_makespan_chart(df, out_path, title_suffix=""):
-    fig, ax = plt.subplots(figsize=(20, 10))
+def draw_case_balanced_mean_makespan_chart(
+    df, out_path, title_suffix="", height_scale=1.0, ymax_ratio=None
+):
+    if height_scale <= 0:
+        raise ValueError("height_scale must be greater than 0")
+    fig, ax = plt.subplots(
+        figsize=(
+            CASE_BALANCED_MAKESPAN_FIG_WIDTH,
+            CASE_BALANCED_MAKESPAN_FIG_HEIGHT * height_scale,
+        )
+    )
 
     x = np.arange(len(df))
     width = 0.23 if SHOW_HEFT_BAR else 0.30
@@ -696,10 +720,13 @@ def draw_case_balanced_mean_makespan_chart(df, out_path, title_suffix=""):
     if SHOW_HEFT_BAR:
         ymax_candidates.append(finite_max(heft_vals))
     ymax = max(ymax_candidates)
-    ax.set_ylim(0, ymax * CASE_BALANCED_MAKESPAN_YMAX_RATIO if ymax > 0 else 1.0)
+    if ymax_ratio is None:
+        ymax_ratio = CASE_BALANCED_MAKESPAN_YMAX_RATIO
+    ax.set_ylim(0, ymax * ymax_ratio if ymax > 0 else 1.0)
     ax.set_ylabel("Mean Makespan", fontsize=AXIS_LABEL_FONTSIZE)
-    ax.set_xlabel("NCCR Bucket", fontsize=AXIS_LABEL_FONTSIZE)
-    if SHOW_EXTRA_FIGURE_TITLES:
+    if SHOW_CASE_BALANCED_MAKESPAN_X_AXIS_LABEL:
+        ax.set_xlabel("NCCR Bucket", fontsize=AXIS_LABEL_FONTSIZE)
+    if SHOW_CASE_BALANCED_MAKESPAN_TITLE:
         ax.set_title(
             f"Case-Balanced Mean Makespan Comparison across CCR/IDR Cases{title_suffix}",
             fontsize=TITLE_FONTSIZE,
@@ -1176,7 +1203,19 @@ def main():
         makespan_out = append_suffix_before_ext(case_balanced_makespan_png, spec["suffix"])
         vcpu_out = append_suffix_before_ext(case_balanced_vcpu_png, spec["suffix"])
         draw_case_balanced_mean_makespan_chart(
-            spec["df"], makespan_out, title_suffix=spec["title_suffix"]
+            spec["df"],
+            makespan_out,
+            title_suffix=spec["title_suffix"],
+            height_scale=(
+                CASE_BALANCED_MAKESPAN_SPLIT_HEIGHT_SCALE
+                if spec["suffix"]
+                else 1.0
+            ),
+            ymax_ratio=(
+                CASE_BALANCED_MAKESPAN_SPLIT_YMAX_RATIO
+                if spec["suffix"]
+                else CASE_BALANCED_MAKESPAN_YMAX_RATIO
+            ),
         )
         draw_case_balanced_mean_vcpu_chart(
             spec["df"], vcpu_out, title_suffix=spec["title_suffix"]
