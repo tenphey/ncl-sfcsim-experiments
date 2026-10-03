@@ -53,10 +53,11 @@ GREEN = "#0B7F5B"
 GREY = "#BDBDBD"
 DARK = "#172A33"
 ALGORITHM_KEYS = ("dheft", "nheft", "gheft")
+# Display names are independent of the historical CSV keys and filenames.
 ALGORITHM_LABELS = {
     "dheft": "DHEFT",
     "nheft": "NHEFT",
-    "gheft": "GHEFT",
+    "gheft": "G-NHEFT",
 }
 
 BUCKET_SPECS = [
@@ -587,7 +588,7 @@ def plot_gheft_tradeoff(scenario_df, output_dir):
             marker="o",
             color="#1F77B4",
             linewidth=2.2,
-            label="GHEFT gain vs DHEFT (%)",
+            label=f"{ALGORITHM_LABELS['gheft']} gain vs DHEFT (%)",
         )
         axis.plot(
             subset["bucket_label"],
@@ -595,7 +596,7 @@ def plot_gheft_tradeoff(scenario_df, output_dir):
             marker="s",
             color=WASEDA_RED,
             linewidth=2.2,
-            label="GHEFT makespan change vs NHEFT (%)",
+            label=f"{ALGORITHM_LABELS['gheft']} makespan change vs NHEFT (%)",
         )
         axis.plot(
             subset["bucket_label"],
@@ -603,7 +604,7 @@ def plot_gheft_tradeoff(scenario_df, output_dir):
             marker="^",
             color="#0B7F5B",
             linewidth=2.2,
-            label="GHEFT vCPU reduction vs NHEFT (%)",
+            label=f"{ALGORITHM_LABELS['gheft']} vCPU reduction vs NHEFT (%)",
         )
         axis.axhline(0.0, color="#777777", linewidth=0.8)
         axis.set_title(COMPOSITIONS[composition], fontsize=13)
@@ -614,7 +615,7 @@ def plot_gheft_tradeoff(scenario_df, output_dir):
         axis.set_ylabel("Percentage (%)")
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", ncol=3, frameon=True)
-    fig.suptitle("GHEFT performance and resource trade-off", fontsize=16)
+    fig.suptitle(f"{ALGORITHM_LABELS['gheft']} performance and resource trade-off", fontsize=16)
     save_figure(fig, output_dir, "gheft_tradeoff")
 
 
@@ -742,7 +743,7 @@ def save_e3x_overview_plot(
             edgecolor=GREEN,
             linewidth=0.8,
             alpha=0.25,
-            label="GHEFT mean used vCPUs",
+            label=f"{ALGORITHM_LABELS['gheft']} mean used vCPUs",
             zorder=1,
         )
 
@@ -775,7 +776,7 @@ def save_e3x_overview_plot(
             marker="o",
             markersize=OVERVIEW_MARKER_SIZE,
             linewidth=OVERVIEW_LINE_WIDTH,
-            label="GHEFT mean makespan",
+            label=f"{ALGORITHM_LABELS['gheft']} mean makespan",
             zorder=4,
         )
 
@@ -843,9 +844,9 @@ def save_e3x_overview_plot(
         performance_labels = ["DHEFT", "NHEFT"]
         if include_gheft:
             resource_handles.append(bars_gheft)
-            resource_labels.append("GHEFT")
+            resource_labels.append(ALGORITHM_LABELS["gheft"])
             performance_handles.append(line_gheft[0])
-            performance_labels.append("GHEFT")
+            performance_labels.append(ALGORITHM_LABELS["gheft"])
         resource_legend = ax_makespan.legend(
             resource_handles,
             resource_labels,
@@ -893,7 +894,7 @@ def save_e3x_overview_plots(bucket_df, output_dir):
         bucket_df,
         output_dir,
         "e3x_makespan_vcpu_overview",
-        "DHEFT, NHEFT, and GHEFT overview",
+        f"DHEFT, NHEFT, and {ALGORITHM_LABELS['gheft']} overview",
         include_gheft=True,
     )
     for suffix, subset in (("-1", bucket_df[bucket_df["bucket_index"] <= 4]), ("-2", bucket_df[bucket_df["bucket_index"] > 4])):
@@ -901,7 +902,7 @@ def save_e3x_overview_plots(bucket_df, output_dir):
             subset,
             output_dir,
             f"e3x_makespan_vcpu_overview{suffix}",
-            "DHEFT, NHEFT, and GHEFT overview",
+            f"DHEFT, NHEFT, and {ALGORITHM_LABELS['gheft']} overview",
             include_gheft=True,
         )
     for name, subset in (
@@ -1549,7 +1550,7 @@ def main():
             "makespan",
             "Mean makespan",
             "makespan_comparison",
-            "DHEFT, NHEFT, and GHEFT makespan by communication composition",
+            f"DHEFT, NHEFT, and {ALGORITHM_LABELS['gheft']} makespan by communication composition",
         )
         plot_algorithm_lines(
             scenario_df,
@@ -1557,7 +1558,7 @@ def main():
             "vcpus",
             "Mean used vCPUs",
             "vcpu_usage_comparison",
-            "DHEFT, NHEFT, and GHEFT resource usage by communication composition",
+            f"DHEFT, NHEFT, and {ALGORITHM_LABELS['gheft']} resource usage by communication composition",
         )
         plot_nheft_rates(scenario_df, output_dir)
         plot_gheft_tradeoff(scenario_df, output_dir)
