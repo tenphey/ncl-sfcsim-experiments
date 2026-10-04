@@ -1,0 +1,34 @@
+{
+  "selected_runs": {
+    "e01x": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e01x/run_20261004_140619_301207_151_500",
+    "e01y": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e01y/run_20261004_140624_327098_151_500",
+    "e01z": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e01z/run_20261004_140631_401772_151_500",
+    "e02x": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e02x/run_20261004_140639_499428_151_500",
+    "e02y": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e02y/run_20261004_140647_888470_151_500",
+    "e02z": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e02z/run_20261004_140654_086727_151_500",
+    "e03x": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e03x/run_20261004_170133_906035_151_500",
+    "e03y": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e03y/run_20261004_140707_777429_151_500",
+    "e03z": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e03z/run_20261004_140712_956281_151_500",
+    "e04x": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e04x/run_20261004_140718_187928_151_500",
+    "e04y": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e04y/run_20261004_140723_971144_151_500",
+    "e04z": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e04z/run_20261004_140731_899032_151_500",
+    "e05x": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e05x/run_20261004_152932_986686_151_500",
+    "e05y": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e05y/run_20261004_152937_279259_151_500",
+    "e05z": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e05z/run_20261004_152942_269008_151_500",
+    "e06x": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e06x/run_20261004_152946_378591_151_500",
+    "e06y": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e06y/run_20261004_152950_820190_151_500",
+    "e06z": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e06z/run_20261004_152955_808564_151_500",
+    "e07x": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e07x/run_20261004_152959_716440_151_500",
+    "e07y": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e07y/run_20261004_153003_803250_151_500",
+    "e07z": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e07z/run_20261004_153007_482138_151_500",
+    "e08x": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e08x/run_20261004_153012_261735_151_500",
+    "e08y": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e08y/run_20261004_153016_573229_151_500",
+    "e08z": "/Users/tengfeisun/Developer/2026/with-downloadscheduling2022-t/experiments/six/e08z/run_20261004_153020_282969_151_500"
+  },
+  "simulator_signature": [
+    "schedule-state-20261004-v1",
+    "e81cbea41e3deb522f22311e91a7041bf40b9c0c37bdccaaf03e426afe6502df",
+    "bdef9385e21573d356f62ebfd6a6dfda4723e153638f0feeacb1605b0cb75903"
+  ],
+  "legacy_allowed": false
+}
