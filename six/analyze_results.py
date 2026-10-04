@@ -98,15 +98,21 @@ OVERVIEW_MARKER_SIZE = 8
 SHOW_OVERVIEW_X_AXIS_LABEL = False
 SHOW_OVERVIEW_TITLE = False
 
+# Larger factors lower makespan lines and labels without changing their values
+# or the independent vCPU axis. Other figures retain the original 1.35 factor.
+OVERVIEW_MAKESPAN_Y_MAX_FACTORS = {
+    "e3xyz_mean_makespan_vcpu_overview-low": 1.8,
+}
+
 # 折线数值标注的位置，按输出图片、折线和数据点分别设置。
 # 每个 tuple 是相对于圆点的 (水平偏移, 垂直偏移)，单位为 points。
 # 每个列表按横轴数据点顺序排列；修改某一个数值时只需调整对应位置。
 # 如果某张图的数据点少于列表长度，多余的位置会被忽略。
 OVERVIEW_ANNOTATION_OFFSETS = {
     "e3xyz_mean_makespan_vcpu_overview-low": {
-        "dheft": [(-36, 6), (-36, 6), (-36, 10), (-50, -8)],
+        "dheft": [(-36, 6), (-36, 6), (-36, 10), (-36, 6)],
         "nheft": [(0, -12), (0, -12), (0, -12), (0, -12)],
-        "gheft": [(2, 6), (2, 6), (4, 8), (8, -12)],
+        "gheft": [(2, 6), (2, 6), (4, 8), (8, 6)],
     },
     "e3xyz_mean_makespan_vcpu_overview-high": {
         "dheft": [(0, 12), (0, 10), (-6, 10), (46, -10)],
@@ -825,7 +831,8 @@ def save_e3x_overview_plot(
     if include_gheft:
         makespan_values.append(makespan_gheft)
         vcpu_values.append(vcpu_gheft)
-    ax_makespan.set_ylim(0, finite_max(np.concatenate(makespan_values)) * 1.35)
+    makespan_y_max_factor = OVERVIEW_MAKESPAN_Y_MAX_FACTORS.get(stem, 1.35)
+    ax_makespan.set_ylim(0, finite_max(np.concatenate(makespan_values)) * makespan_y_max_factor)
     ax_vcpu.set_ylim(0, finite_max(np.concatenate(vcpu_values)) * 1.25)
     ax_makespan.grid(axis="y", linestyle="--", linewidth=0.6, alpha=0.35)
 

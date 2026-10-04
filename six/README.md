@@ -64,7 +64,8 @@ Formal analysis uses the latest complete, versioned batch with the requested
 seed count, and rejects mixed compiled versions/dependencies, mismatched seed
 sequences, duplicate seeds or incomplete/invalid paired records. Completion means
 all candidate seeds finished successfully; it does not mean all satisfy the
-scenario filter. Filtering, per-seed gain statistics, and plotting remain unchanged.
+scenario filter. Filtering and per-seed gain statistics remain unchanged;
+display-only adjustments are recorded below.
 
 ```sh
 experiments/.venv/bin/python experiments/six/analyze_results.py
@@ -77,3 +78,18 @@ The read-only `check_valid_counts.py` remains usable during an ongoing run.
 
 The Java runtime is read from `experiments/java_runtime.properties`; the Java
 project root therefore remains configurable without changing these scripts.
+
+## Plot Adjustment (2026-10-04)
+
+- For `e3xyz_mean_makespan_vcpu_overview-low` only, increase the makespan-axis
+  maximum from 1.35 to 1.8 times the largest plotted makespan. The zero baseline
+  is retained; the lines and labels move toward the middle without changing data.
+- `OVERVIEW_MAKESPAN_Y_MAX_FACTORS` in `analyze_results.py` controls this override.
+  All other overview figures retain the original 1.35 factor. The vCPU axis,
+  bars, figure dimensions and per-point annotation offsets remain unchanged.
+- Regenerate only this PNG/PDF in `analysis_20261004_175024_500` from its existing
+  bucket summary. No experiment or statistical analysis is rerun. All other
+  files in that analysis directory remain byte-identical.
+- Verify all seven overview variants: data and annotation offsets are unchanged;
+  only the target makespan-axis limits differ. Visually check the regenerated
+  PNG; its PDF retains embedded TrueType fonts. Paper assets are not updated.
